@@ -3,290 +3,145 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>bench-atomics-and-memory Baseline Probe</title>
-    <meta name="description" content="atomics/memory 벤치 baseline probe">
+    <title>bench-atomics-and-memory Atomics and Memory Benchmark</title>
+    <meta name="description" content="Deterministic atomics and memory benchmark for AI WebGPU Lab">
     <style>
       :root {
-        color-scheme: light;
-        --bg: #08111b;
-        --surface: rgba(9, 18, 31, 0.88);
-        --surface-strong: rgba(15, 31, 49, 0.94);
-        --surface-soft: rgba(16, 30, 46, 0.72);
-        --border: rgba(125, 211, 252, 0.16);
-        --text: #e6effd;
-        --muted: #9fb6cf;
-        --accent: #7dd3fc;
-        --accent-strong: #38bdf8;
-        --success: #86efac;
-        --warn: #fde68a;
-        --danger: #fca5a5;
+        color-scheme: dark;
+        --panel: #10151d;
+        --panel-soft: #151d28;
+        --border: rgba(34, 197, 94, 0.2);
+        --text: #eef2ff;
+        --muted: #c2cedd;
+        --accent: #22c55e;
+        --accent-strong: #60a5fa;
+        --button-text: #07130a;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         min-height: 100vh;
         font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
         color: var(--text);
-        background:
-          radial-gradient(circle at top left, rgba(56, 189, 248, 0.22), transparent 32%),
-          radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.18), transparent 30%),
-          linear-gradient(160deg, #04070d 0%, #0c1727 48%, #07121a 100%);
+        background: linear-gradient(150deg, #070b12 0%, #0f1723 54%, #101b22 100%);
       }
-
       main {
         width: min(1180px, calc(100% - 32px));
-        margin: 40px auto;
-        padding: 32px;
+        margin: 24px auto;
+        padding: 24px;
         border: 1px solid var(--border);
-        border-radius: 28px;
-        background: var(--surface);
-        backdrop-filter: blur(16px);
-        box-shadow: 0 32px 72px rgba(0, 0, 0, 0.32);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.34);
       }
-
       .eyebrow {
         display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        margin-bottom: 16px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        background: rgba(125, 211, 252, 0.12);
+        padding: 5px 10px;
+        border: 1px solid rgba(34, 197, 94, 0.26);
+        border-radius: 8px;
         color: var(--accent);
         font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.08em;
         text-transform: uppercase;
       }
-
-      h1 {
-        margin: 0 0 12px;
-        font-size: clamp(32px, 5vw, 56px);
-        line-height: 1.04;
-      }
-
-      p {
-        margin: 0 0 12px;
-        color: var(--muted);
-        font-size: 16px;
-        line-height: 1.7;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 18px;
-        margin: 24px 0;
-      }
-
-      .panel {
-        padding: 18px;
-        border-radius: 18px;
-        background: var(--surface-soft);
-        border: 1px solid rgba(148, 163, 184, 0.14);
-      }
-
-      .panel h2 {
-        margin: 0 0 14px;
-        font-size: 18px;
-      }
-
-      .meta-grid,
-      .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 12px;
-      }
-
-      .meta-card,
-      .metric-card {
-        padding: 14px;
-        border-radius: 16px;
-        background: var(--surface-strong);
-        border: 1px solid rgba(148, 163, 184, 0.14);
-      }
-
-      .label {
-        display: block;
-        margin-bottom: 8px;
-        color: var(--muted);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .value {
-        font-size: 18px;
-        font-weight: 600;
-        word-break: break-word;
-      }
-
-      .status-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        min-height: 34px;
-        padding: 0 12px;
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        background: rgba(148, 163, 184, 0.12);
-        color: var(--text);
-        font-size: 13px;
-        font-weight: 600;
-      }
-
-      .badge.success {
-        border-color: rgba(134, 239, 172, 0.26);
-        color: var(--success);
-      }
-
-      .badge.warn {
-        border-color: rgba(253, 230, 138, 0.26);
-        color: var(--warn);
-      }
-
-      .badge.danger {
-        border-color: rgba(252, 165, 165, 0.26);
-        color: var(--danger);
-      }
-
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin: 28px 0 0;
-      }
-
-      button,
-      a.button {
+      h1 { margin: 14px 0 10px; font-size: clamp(32px, 5vw, 52px); }
+      p { margin: 0 0 12px; color: var(--muted); line-height: 1.65; }
+      .grid { display: grid; gap: 16px; }
+      .hero { grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); align-items: start; margin-top: 20px; }
+      .stack { display: grid; gap: 16px; }
+      .panel { padding: 16px; border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 8px; background: var(--panel-soft); }
+      .panel h2 { margin: 0 0 12px; font-size: 18px; }
+      .status-row, .actions, .links { display: flex; flex-wrap: wrap; gap: 10px; }
+      .badge { display: inline-flex; align-items: center; min-height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(148, 163, 184, 0.12); border: 1px solid rgba(148, 163, 184, 0.16); font-size: 13px; font-weight: 600; }
+      button, a.button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 46px;
-        padding: 0 18px;
-        border-radius: 999px;
-        color: #04111c;
+        min-height: 44px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 8px;
         background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+        color: var(--button-text);
         font-weight: 700;
         text-decoration: none;
-        border: 0;
         cursor: pointer;
       }
-
-      button.secondary {
-        color: var(--text);
+      button.secondary, a.button.secondary {
         background: rgba(148, 163, 184, 0.12);
-        border: 1px solid rgba(148, 163, 184, 0.18);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        color: var(--text);
       }
-
-      button:disabled {
-        opacity: 0.55;
-        cursor: default;
-      }
-
-      a.link {
-        color: var(--accent);
-        text-decoration: none;
-      }
-
-      ul {
-        margin: 0;
-        padding-left: 18px;
-        color: var(--muted);
-      }
-
-      li + li {
-        margin-top: 8px;
-      }
-
-      pre {
-        margin: 0;
-        max-height: 360px;
-        overflow: auto;
-        padding: 14px;
-        border-radius: 16px;
-        background: rgba(5, 10, 18, 0.86);
+      .metric-grid, .meta-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+      .card { padding: 12px; border-radius: 8px; background: #0a1018; border: 1px solid rgba(148, 163, 184, 0.14); }
+      .label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 12px; text-transform: uppercase; }
+      .value { font-size: 18px; font-weight: 650; word-break: break-word; }
+      pre { margin: 0; max-height: 360px; overflow: auto; padding: 12px; border-radius: 8px; background: #0a1018; border: 1px solid rgba(148, 163, 184, 0.14); color: #dbeafe; font-size: 13px; line-height: 1.6; }
+      table { width: 100%; border-collapse: collapse; color: var(--muted); font-size: 13px; }
+      th, td { padding: 8px; border-bottom: 1px solid rgba(148, 163, 184, 0.14); text-align: left; vertical-align: top; }
+      th { color: var(--text); }
+      ul { margin: 0; padding-left: 18px; color: var(--muted); }
+      li + li { margin-top: 8px; }
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
         border: 1px solid rgba(148, 163, 184, 0.14);
-        color: #cde3ff;
-        font-size: 13px;
-        line-height: 1.6;
+        background: #07101a;
       }
-
-      footer {
-        margin-top: 28px;
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      code {
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-      }
-
-      @media (max-width: 720px) {
-        main {
-          padding: 20px;
-          margin: 16px auto;
-        }
+      @media (max-width: 900px) {
+        main { width: min(100%, calc(100% - 16px)); margin: 8px auto; padding: 16px; }
+        .hero { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
     <main>
-      <!-- ai-webgpu-lab-generated: baseline-probe-v1 -->
-      <div class="eyebrow">AI WebGPU Lab Baseline Probe</div>
-      <h1>bench-atomics-and-memory</h1>
-      <p>atomics/memory 벤치. This page is the first runnable baseline for the repository: it collects browser/device context, probes WebGPU readiness, runs lightweight frame and worker samples, and exports a schema-aligned JSON draft you can promote into <code>reports/raw/</code>.</p>
+      <div class="eyebrow">AI WebGPU Lab Benchmark</div>
+      <h1>Atomics and Memory Benchmark</h1>
+      <p>`bench-atomics-and-memory` compares deterministic histogram, scatter-accumulation, and reduction kernels under one atomics-heavy benchmark path.</p>
 
-      <section class="panel" aria-label="Repository metadata">
-        <h2>Repository Metadata</h2>
-        <div class="meta-grid" id="meta-grid"></div>
-        <div class="actions">
-          <button id="detect-environment" type="button">Detect Environment</button>
-          <button id="run-webgpu" type="button">Run WebGPU Probe</button>
-          <button id="run-frame" class="secondary" type="button">Run Frame Probe</button>
-          <button id="run-worker" class="secondary" type="button">Run Worker Probe</button>
-          <button id="download-json" class="secondary" type="button">Download JSON</button>
-        </div>
-      </section>
-
-      <section class="panel" aria-label="Probe status">
-        <h2>Probe Status</h2>
-        <div class="status-row" id="status-row"></div>
-        <p id="status-summary">Run the environment and WebGPU probes first. The exported JSON is intentionally minimal: it captures the first reproducible browser baseline and should be replaced by workload-specific metrics as the repository matures.</p>
-      </section>
-
-      <section class="grid" aria-label="Baseline guidance">
-        <article class="panel">
-          <h2>Focus For This Repo</h2>
-          <ul id="focus-list"></ul>
+      <section class="grid hero">
+        <article class="stack">
+          <section class="panel">
+            <h2>Benchmark Controls</h2>
+            <div class="status-row" id="status-row"></div>
+            <p id="summary">Run the suite to compare contention-heavy kernels and capture one schema-aligned atomics result.</p>
+            <div class="actions">
+              <button id="run-benchmark" type="button">Run Atomics Suite</button>
+              <button id="download-json" class="secondary" type="button">Download JSON</button>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>Kernel Matrix</h2>
+            <div id="matrix-view"></div>
+          </section>
+          <section class="panel">
+            <h2>Activity Log</h2>
+            <ul id="log-list"></ul>
+          </section>
         </article>
-        <article class="panel">
-          <h2>Next Baseline Steps</h2>
-          <ul id="next-steps"></ul>
+        <article class="stack">
+          <section class="panel">
+            <h2>Contention Preview</h2>
+            <canvas id="suite-canvas" width="520" height="320"></canvas>
+          </section>
+          <section class="panel">
+            <h2>Metrics</h2>
+            <div class="metric-grid" id="metric-grid"></div>
+          </section>
+          <section class="panel">
+            <h2>Environment</h2>
+            <div class="meta-grid" id="meta-grid"></div>
+          </section>
         </article>
       </section>
 
-      <section class="panel" aria-label="Probe metrics">
-        <h2>Key Metrics</h2>
-        <div class="metrics-grid" id="metrics-grid"></div>
-      </section>
-
-      <section class="grid" aria-label="Probe output">
+      <section class="grid hero">
         <article class="panel">
-          <h2>Environment Snapshot</h2>
-          <pre id="environment-json">{
-  "status": "pending"
-}</pre>
+          <h2>Fixture</h2>
+          <div id="fixture-view"></div>
         </article>
         <article class="panel">
           <h2>Schema-Aligned Result Draft</h2>
@@ -296,21 +151,29 @@
         </article>
       </section>
 
-      <section class="panel" aria-label="Probe activity">
-        <h2>Activity Log</h2>
-        <ul id="activity-log"></ul>
+      <section class="grid hero">
+        <article class="panel">
+          <h2>Benchmark Notes</h2>
+          <ul>
+            <li>Each case uses a fixed working set, shared memory budget, and atomic pass count.</li>
+            <li>The suite records one aggregate result plus per-case contention and memory bandwidth comparisons.</li>
+            <li>Real WGSL atomics and memory kernels should preserve this result contract before replacing the deterministic harness.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>Linked Artifacts</h2>
+          <div class="links">
+            <a class="button" href="https://github.com/ai-webgpu-lab/bench-atomics-and-memory">Open Repository</a>
+            <a class="button secondary" href="https://github.com/ai-webgpu-lab/bench-atomics-and-memory/blob/main/README.md">Read README</a>
+            <a class="button secondary" href="https://github.com/ai-webgpu-lab/bench-atomics-and-memory/blob/main/RESULTS.md">View Results</a>
+          </div>
+        </article>
       </section>
-
-      <div class="actions">
-        <a class="button" href="https://github.com/ai-webgpu-lab/bench-atomics-and-memory">Open Repository</a>
-        <a class="button" href="https://github.com/ai-webgpu-lab/bench-atomics-and-memory/blob/main/README.md">Read README</a>
-        <a class="button" href="https://github.com/ai-webgpu-lab/bench-atomics-and-memory/blob/main/RESULTS.md">View Results</a>
-      </div>
-
-      <footer>
-        Published with GitHub Pages using <code>.github/workflows/deploy-pages.yml</code>. Replace this shared probe with a repository-specific harness when the first real workload implementation lands.
-      </footer>
     </main>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./benchmark-adapter.js"></script>
+    <script type="module" src="./real-benchmark-sketch.js"></script>
+    <script type="module" src="./real-renderer-sketch.js"></script>
+    <script defer src="./app.js"></script>
+      <script type="module" src="./renderer-adapter.js"></script>
   </body>
 </html>
