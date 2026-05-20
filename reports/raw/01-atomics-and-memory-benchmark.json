@@ -1,0 +1,186 @@
+{
+  "meta": {
+    "repo": "bench-atomics-and-memory",
+    "commit": "7f668b0",
+    "timestamp": "2026-05-20T15:36:10.896Z",
+    "owner": "ai-webgpu-lab",
+    "track": "benchmark",
+    "scenario": "atomics-and-memory-benchmark",
+    "notes": "cases=3; winner=ring-buffer-reduce; backend=webgpu; peakItems=262144; maxWorkgroup=256; sharedMemory=48; suite=atomics-memory-suite-v1; automation=playwright-chromium",
+    "capture_context": {
+      "tool": "playwright-chromium",
+      "browser_name": "Chromium",
+      "browser_version": "147.0.7727.15",
+      "headless": true,
+      "captured_at": "2026-05-20T15:36:11.051Z",
+      "captured_by": "codex"
+    },
+    "capture_scenario_id": "01-atomics-and-memory-benchmark"
+  },
+  "environment": {
+    "browser": {
+      "name": "Chrome",
+      "version": "147.0.7727.15"
+    },
+    "os": {
+      "name": "Linux",
+      "version": "unknown"
+    },
+    "device": {
+      "name": "Linux x86_64",
+      "class": "desktop-high",
+      "cpu": "16 threads",
+      "memory_gb": 32,
+      "power_mode": "unknown"
+    },
+    "gpu": {
+      "adapter": "synthetic-webgpu-atomics-suite",
+      "required_features": [
+        "shader-f16",
+        "timestamp-query"
+      ],
+      "limits": {
+        "maxComputeWorkgroupSizeX": 256,
+        "maxStorageBufferBindingSize": 134217728,
+        "maxComputeInvocationsPerWorkgroup": 256
+      }
+    },
+    "backend": "webgpu",
+    "fallback_triggered": false,
+    "worker_mode": "worker",
+    "cache_state": "warm"
+  },
+  "workload": {
+    "kind": "compute",
+    "name": "atomics-and-memory-benchmark",
+    "input_profile": "3-case-atomics-suite",
+    "model_id": "ring-buffer-reduce",
+    "dataset": "atomics-memory-suite-v1"
+  },
+  "metrics": {
+    "common": {
+      "time_to_interactive_ms": 605.3,
+      "init_ms": 0.9012,
+      "success_rate": 1,
+      "peak_memory_note": "32 GB reported by browser",
+      "error_type": ""
+    },
+    "compute": {
+      "bodies_or_particles": 262144,
+      "workgroup_size": 256,
+      "steps_per_sec": 6141.22,
+      "integration_ms": 0.3004,
+      "avg_dispatch_ms": 0.21,
+      "p95_dispatch_ms": 0.34,
+      "atomics_conflict_pct": 14.721,
+      "histogram_spill_pct": 3.2,
+      "memory_bandwidth_gbps": 93.28,
+      "cache_hit_rate_pct": 90.83,
+      "shared_memory_kb": 48,
+      "atomic_passes": 6,
+      "suite_case_count": 3,
+      "suite_winner_score": 10547.38
+    }
+  },
+  "status": "success",
+  "artifacts": {
+    "raw_logs": [
+      "./reports/logs/01-atomics-and-memory-benchmark.log"
+    ],
+    "cases": [
+      {
+        "id": "shared-histogram",
+        "label": "Shared Histogram",
+        "family": "histogram",
+        "accent": "#22c55e",
+        "bodies_or_particles": 131072,
+        "workgroup_size": 128,
+        "shared_memory_kb": 32,
+        "atomic_passes": 4,
+        "base_steps_per_sec": 6240,
+        "base_integration_ms": 0.296,
+        "base_avg_dispatch_ms": 0.1924,
+        "base_p95_dispatch_ms": 0.2672,
+        "atomics_conflict_pct": 8.406,
+        "histogram_spill_pct": 0.6,
+        "memory_bandwidth_gbps": 84.18,
+        "cache_hit_rate_pct": 92.38,
+        "stress_bias": 1.08,
+        "thermal_note": "shared-histogram-balanced",
+        "steps_per_sec": 6236.63,
+        "integration_ms": 0.2964,
+        "avg_dispatch_ms": 0.1927,
+        "p95_dispatch_ms": 0.2678,
+        "stress_score": 8133.183
+      },
+      {
+        "id": "particle-grid-accumulation",
+        "label": "Particle Grid Accumulation",
+        "family": "scatter",
+        "accent": "#60a5fa",
+        "bodies_or_particles": 65536,
+        "workgroup_size": 256,
+        "shared_memory_kb": 48,
+        "atomic_passes": 6,
+        "base_steps_per_sec": 5180,
+        "base_integration_ms": 0.362,
+        "base_avg_dispatch_ms": 0.2643,
+        "base_p95_dispatch_ms": 0.3385,
+        "atomics_conflict_pct": 14.721,
+        "histogram_spill_pct": 3.2,
+        "memory_bandwidth_gbps": 91.55,
+        "cache_hit_rate_pct": 86.07,
+        "stress_bias": 1.02,
+        "thermal_note": "scatter-grid-hot-l2",
+        "steps_per_sec": 5174.41,
+        "integration_ms": 0.3629,
+        "avg_dispatch_ms": 0.2652,
+        "p95_dispatch_ms": 0.34,
+        "stress_score": 4961.849
+      },
+      {
+        "id": "ring-buffer-reduce",
+        "label": "Ring Buffer Reduce",
+        "family": "reduction",
+        "accent": "#f59e0b",
+        "bodies_or_particles": 262144,
+        "workgroup_size": 256,
+        "shared_memory_kb": 16,
+        "atomic_passes": 3,
+        "base_steps_per_sec": 7024,
+        "base_integration_ms": 0.241,
+        "base_avg_dispatch_ms": 0.1713,
+        "base_p95_dispatch_ms": 0.2414,
+        "atomics_conflict_pct": 5.813,
+        "histogram_spill_pct": 0,
+        "memory_bandwidth_gbps": 104.12,
+        "cache_hit_rate_pct": 94.05,
+        "stress_bias": 1.12,
+        "thermal_note": "reduction-streaming-cached",
+        "steps_per_sec": 7012.62,
+        "integration_ms": 0.2419,
+        "avg_dispatch_ms": 0.1721,
+        "p95_dispatch_ms": 0.243,
+        "stress_score": 10547.38
+      }
+    ],
+    "deploy_url": "https://ai-webgpu-lab.github.io/bench-atomics-and-memory/",
+    "benchmark_adapter": {
+      "id": "deterministic-renderer-shootout",
+      "label": "Deterministic Renderer Shootout",
+      "version": "1.0.0",
+      "capabilities": [
+        "profile-comparison",
+        "winner-selection",
+        "fallback-pair"
+      ],
+      "benchmarkType": "synthetic",
+      "isReal": false,
+      "status": "deterministic",
+      "message": "Deterministic harness — replace by registering a real benchmark adapter."
+    },
+    "screenshots": [
+      "./reports/screenshots/01-atomics-and-memory-benchmark.png"
+    ]
+  }
+}
